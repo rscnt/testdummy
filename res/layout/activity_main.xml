@@ -14,11 +14,18 @@
         android:layout_centerInParent="true"
         android:orientation="vertical" >
 
+        <Button
+            android:id="@+id/buttonPOSTSnippet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Add Snippet" />
+
         <TextView
             android:id="@+id/textViewSniptTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="left"
             android:text="All Snippets"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

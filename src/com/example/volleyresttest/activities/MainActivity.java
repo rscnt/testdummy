@@ -17,9 +17,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements Response.ErrorListener,
 		Listener<SnippetList> {
@@ -28,6 +30,7 @@ public class MainActivity extends Activity implements Response.ErrorListener,
 	Intent snptDtlActvty;
 	TextView txtVwTitle;
 	ListView lstVwSnpts;
+	Button btnPostSnippet;
 	ArrayAdapter<Snippet> snptsArrayAdapter;
 
 	SnippetList snptLst = new SnippetList();
@@ -36,6 +39,9 @@ public class MainActivity extends Activity implements Response.ErrorListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		// TODO: Replace the SnippetSingleton with a Service {{{
+		SnippetSingleton.init(this);
+		// }}}
 		initUI();
 	}
 
@@ -48,16 +54,31 @@ public class MainActivity extends Activity implements Response.ErrorListener,
 
 	public void onStart() {
 		super.onStart();
-		// TODO: Replace the SnippetSingleton with a Service {{{
-		SnippetSingleton.init(this);
 		SnippetSingleton.getInstance().getSnippetApi()
 				.getListSnippets(this, this);
-		// }}}
+	}
+
+	public void onResume() {
+		super.onResume();
+		SnippetSingleton.getInstance().getSnippetApi()
+				.getListSnippets(this, this);
 	}
 
 	private void initUI() {
 		txtVwTitle = (TextView) this.findViewById(R.id.textViewSniptTitle);
 		lstVwSnpts = (ListView) this.findViewById(R.id.listViewSnippets);
+		btnPostSnippet = (Button) this.findViewById(R.id.buttonPOSTSnippet);
+		btnPostSnippet.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				Log.d("Main Activity Add Snippet: ", "");
+				snptDtlActvty.putExtra("snippetJSON", new Snippet().toJson());
+				startActivity(snptDtlActvty);
+			}
+
+		});
+
 		snptsArrayAdapter = new ArrayAdapter<Snippet>(this,
 				android.R.layout.simple_list_item_1);
 		snptDtlActvty = new Intent(this, SnippetDetailActivity.class);
@@ -80,6 +101,7 @@ public class MainActivity extends Activity implements Response.ErrorListener,
 	@Override
 	public void onResponse(SnippetList snippetList) {
 		// TODO: Implement next and previous
+		snptsArrayAdapter.clear();
 		for (Snippet snpt : snippetList.getResults()) {
 			snptsArrayAdapter.add(snpt);
 		}

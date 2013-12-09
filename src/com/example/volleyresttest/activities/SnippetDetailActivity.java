@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.view.View.OnClickListener;
 
 public class SnippetDetailActivity extends Activity implements
@@ -27,7 +29,6 @@ public class SnippetDetailActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_snippet_detail);
-
 		if (null == savedInstanceState) {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
@@ -40,8 +41,18 @@ public class SnippetDetailActivity extends Activity implements
 			snpt = gson.fromJson(savedInstanceState.getString("snippetJSON"),
 					Snippet.class);
 		}
-
 		initUI();
+	}
+
+	public void onStart() {
+		super.onStart();
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			snpt = gson
+					.fromJson(extras.getString("snippetJSON"), Snippet.class);
+		} else {
+			snpt = new Snippet();
+		}
 	}
 
 	@Override
@@ -52,14 +63,34 @@ public class SnippetDetailActivity extends Activity implements
 	}
 
 	private void initUI() {
+
 		final EditText editTxtTitle = (EditText) findViewById(R.id.editTextTitle);
 		final EditText editTxtCode = (EditText) findViewById(R.id.editTextCode);
+		final LinearLayout lnrLyr = (LinearLayout) findViewById(R.id.lnrLayout);
+
 		final SnippetDetailActivity that = this;
 		Button btnSendRqst = (Button) findViewById(R.id.buttonSendSnippet);
 
 		editTxtTitle.setText(snpt.getTitle());
 		editTxtCode.setText(snpt.getCode());
-		
+
+		if (!isNewSnippet()) {
+			Button btnDelete = new Button(this);
+			btnDelete.setText("Delete Snippet " + snpt.getTitle());
+			btnDelete.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Toast toast = Toast.makeText(that,
+							"DELETED: " + snpt.toString(), Toast.LENGTH_SHORT);
+					SnippetSingleton.getInstance().getSnippetApi()
+							.deleteSingleSnippet(snpt, that, that);
+					toast.show();
+				}
+			});
+			lnrLyr.addView(btnDelete);
+		}
+
 		btnSendRqst.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -69,9 +100,15 @@ public class SnippetDetailActivity extends Activity implements
 				snpt.setCode(editTxtCode.getText().toString());
 
 				if (isNewSnippet()) {
+					Toast toast = Toast.makeText(that,
+							"POST: " + snpt.toString(), Toast.LENGTH_SHORT);
+					toast.show();
 					SnippetSingleton.getInstance().getSnippetApi()
 							.postSingleSnippet(snpt, that, that);
 				} else {
+					Toast toast = Toast.makeText(that,
+							"PUT: " + snpt.toString(), Toast.LENGTH_SHORT);
+					toast.show();
 					SnippetSingleton.getInstance().getSnippetApi()
 							.putSingleSnippet(snpt, that, that);
 				}
@@ -95,6 +132,9 @@ public class SnippetDetailActivity extends Activity implements
 
 	@Override
 	public void onErrorResponse(VolleyError volleyError) {
+		Toast toast = Toast.makeText(this, "Error: "
+				+ volleyError.networkResponse.statusCode, Toast.LENGTH_SHORT);
+		toast.show();
 		volleyError.printStackTrace();
 	}
 }
