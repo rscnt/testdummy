@@ -23,9 +23,9 @@ public class SnippetRequest extends JsonRequest<Snippet> {
 	private final Gson gsOnSnpt = new Gson();
 
 	// GET - METHOD
-	public SnippetRequest(Long id, Boolean delete,
+	public SnippetRequest(Snippet snpt, Boolean delete,
 			Listener<Snippet> snippetListener, ErrorListener errorListener) {
-		super((delete == true) ? Method.DELETE : Method.GET, getURL(id), null,
+		super((delete == true) ? Method.DELETE : Method.GET, snpt.getUrl(), null,
 				snippetListener, errorListener);
 		this.snptLstnr = snippetListener;
 	}
@@ -33,9 +33,9 @@ public class SnippetRequest extends JsonRequest<Snippet> {
 	// POST - METHOD
 	public SnippetRequest(Snippet snpt, Listener<Snippet> snippetListener,
 			ErrorListener errorListener) {
-		super((snpt.getId() != null) ? Method.PUT : Method.POST,
-				(snpt.getId() != null) ? getURL(snpt.getId()) : getBaseURL(),
-				snpt.toJson(), snippetListener, errorListener);
+		super((snpt.getUrl() != null) ? Method.PUT : Method.POST, (snpt
+				.getUrl() != null) ? snpt.getUrl() : getBaseURL(), snpt
+				.toJson(), snippetListener, errorListener);
 		Log.d("SNIPPET REQUEST", snpt.toJson());
 		this.snptLstnr = snippetListener;
 	}
@@ -73,10 +73,6 @@ public class SnippetRequest extends JsonRequest<Snippet> {
 
 	private static String getBaseURL() {
 		return "http://192.168.1.152/snippets/";
-	}
-
-	private static String getURL(Long id) {
-		return getBaseURL() + id + "/";
 	}
 
 }

@@ -31,17 +31,17 @@ public class SnippetApi {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Request<Snippet> getSingleSnippet(Long id,
+	public Request<Snippet> getSingleSnippet(Snippet snpt,
 			Listener<Snippet> snptLstnr, ErrorListener rrLstnr) {
-		Request<Snippet> rqstSnpt = new SnippetRequest(id, false, snptLstnr,
+		Request<Snippet> rqstSnpt = new SnippetRequest(snpt, false, snptLstnr,
 				rrLstnr);
 		return rqstQueue.add(rqstSnpt);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Request<Snippet> deleteSingleSnippet(Long id,
+	public Request<Snippet> deleteSingleSnippet(Snippet snpt,
 			Listener<Snippet> snptLstnr, ErrorListener rrLstnr) {
-		Request<Snippet> rqstSnpt = new SnippetRequest(id, true, snptLstnr,
+		Request<Snippet> rqstSnpt = new SnippetRequest(snpt, true, snptLstnr,
 				rrLstnr);
 		return rqstQueue.add(rqstSnpt);
 	}
@@ -55,9 +55,9 @@ public class SnippetApi {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Request<Snippet> updateSingleSnippet(Snippet snpt,
+	public Request<Snippet> putSingleSnippet(Snippet snpt,
 			Listener<Snippet> snptLstnr, ErrorListener rrLstnr) {
-		if (snpt.getId() == null) {
+		if (snpt.getUrl() == null) {
 			throw new IllegalAccessError(
 					"You should use postSingleSnippet or Set the ID for this snippet");
 		}

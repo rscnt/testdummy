@@ -7,9 +7,11 @@ import com.example.volleyresttest.R;
 import com.example.volleyresttest.http.SnippetSingleton;
 import com.example.volleyresttest.models.Snippet;
 import com.example.volleyresttest.models.SnippetList;
+import com.example.volleyresttest.activities.SnippetDetailActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -22,9 +24,12 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity implements Response.ErrorListener,
 		Listener<SnippetList> {
 
+	// Child View Detail Snippet
+	Intent snptDtlActvty;
 	TextView txtVwTitle;
 	ListView lstVwSnpts;
 	ArrayAdapter<Snippet> snptsArrayAdapter;
+
 	SnippetList snptLst = new SnippetList();
 
 	@Override
@@ -55,6 +60,7 @@ public class MainActivity extends Activity implements Response.ErrorListener,
 		lstVwSnpts = (ListView) this.findViewById(R.id.listViewSnippets);
 		snptsArrayAdapter = new ArrayAdapter<Snippet>(this,
 				android.R.layout.simple_list_item_1);
+		snptDtlActvty = new Intent(this, SnippetDetailActivity.class);
 		lstVwSnpts.setAdapter(snptsArrayAdapter);
 		lstVwSnpts.setOnItemClickListener(new OnItemClickListener() {
 
@@ -64,6 +70,8 @@ public class MainActivity extends Activity implements Response.ErrorListener,
 					int position, long id) {
 				Snippet snpt = snptsArrayAdapter.getItem(position);
 				Log.d("Main Activity ListView Click : ", snpt.toJson());
+				snptDtlActvty.putExtra("snippetJSON", snpt.toJson());
+				startActivity(snptDtlActvty);
 			}
 
 		});

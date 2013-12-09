@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.volleyresttest.SnippetDetailActivity"
+            android:name="com.example.volleyresttest.activities.SnippetDetailActivity"
             android:label="@string/title_activity_snippet_detail"
             android:parentActivityName="com.example.volleyresttest.activities.MainActivity" >
             <meta-data

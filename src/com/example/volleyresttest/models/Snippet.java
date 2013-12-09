@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 public class Snippet {
 
-	private Long id;
 	private String url;
 	private String highlight;
 	private String owner;
@@ -15,21 +14,6 @@ public class Snippet {
 	private String style;
 
 	public Snippet() {
-	}
-
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	/**
